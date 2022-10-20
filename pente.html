@@ -1,0 +1,2566 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+<title>Pente</title>
+<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+
+	<!-- FUNCTIONS -->
+
+	<script type="text/javascript">
+
+var player; // 1 if first player's turn (white), else 2 if second player's turn
+var turn; // turn number - starts at 1 and increment after player 2 moves
+var size; // width of board (and height) - normally always 19
+size = 19;
+var p1Takes; // count pairs taken for player 1
+var p2Takes; // count pairs taken for player 2
+
+
+var oldX;   // Last piece place - X co-ordinate
+var oldY;   // Last piece place - Y co-ordinate
+
+var emptySpot = new Image();
+var emptySpotL = new Image();
+var emptySpotTL = new Image();
+var emptySpotT = new Image();
+var emptySpotTR = new Image();
+var emptySpotR = new Image();
+var emptySpotBR = new Image();
+var emptySpotB = new Image();
+var emptySpotBL = new Image();
+
+var blackSpot = new Image();
+var blackSpotL = new Image();
+var blackSpotTL = new Image();
+var blackSpotT = new Image();
+var blackSpotTR = new Image();
+var blackSpotR = new Image();
+var blackSpotBR = new Image();
+var blackSpotB = new Image();
+var blackSpotBL = new Image();
+
+var whiteSpot = new Image();
+var whiteSpotL = new Image();
+var whiteSpotTL = new Image();
+var whiteSpotT = new Image();
+var whiteSpotTR = new Image();
+var whiteSpotR = new Image();
+var whiteSpotBR = new Image();
+var whiteSpotB = new Image();
+var whiteSpotBL = new Image();
+
+var blackHover = new Image();
+var blackHoverL = new Image();
+var blackHoverTL = new Image();
+var blackHoverT = new Image();
+var blackHoverTR = new Image();
+var blackHoverR = new Image();
+var blackHoverBR = new Image();
+var blackHoverB = new Image();
+var blackHoverBL = new Image();
+
+var whiteHover = new Image();
+var whiteHoverL = new Image();
+var whiteHoverTL = new Image();
+var whiteHoverT = new Image();
+var whiteHoverTR = new Image();
+var whiteHoverR = new Image();
+var whiteHoverBR = new Image();
+var whiteHoverB = new Image();
+var whiteHoverBL = new Image();
+
+var blackLast = new Image();
+var blackLastL = new Image();
+var blackLastTL = new Image();
+var blackLastT = new Image();
+var blackLastTR = new Image();
+var blackLastR = new Image();
+var blackLastBR = new Image();
+var blackLastB = new Image();
+var blackLastBL = new Image();
+
+var whiteLast = new Image();
+var whiteLastL = new Image();
+var whiteLastTL = new Image();
+var whiteLastT = new Image();
+var whiteLastTR = new Image();
+var whiteLastR = new Image();
+var whiteLastBR = new Image();
+var whiteLastB = new Image();
+var whiteLastBL = new Image();
+
+emptySpot.src = "images/intersection.bmp";
+emptySpotL.src = "images/left.bmp";
+emptySpotTL.src = "images/top_left.bmp";
+emptySpotT.src = "images/top.bmp";
+emptySpotTR.src = "images/top_right.bmp";
+emptySpotR.src = "images/right.bmp";
+emptySpotBR.src = "images/bottom_right.bmp";
+emptySpotB.src = "images/bottom.bmp";
+emptySpotBL.src = "images/bottom_left.bmp";
+
+whiteHover.src = "images/hover_white.bmp";
+whiteHoverL.src = "images/hover_white_left.bmp";
+whiteHoverTL.src = "images/hover_white_top_left.bmp";
+whiteHoverT.src = "images/hover_white_top.bmp";
+whiteHoverTR.src = "images/hover_white_top_right.bmp";
+whiteHoverR.src = "images/hover_white_right.bmp";
+whiteHoverBR.src = "images/hover_white_bottom_right.bmp";
+whiteHoverB.src = "images/hover_white_bottom.bmp";
+whiteHoverBL.src = "images/hover_white_bottom_left.bmp";
+
+blackHover.src = "images/hover_black.bmp";
+blackHoverL.src = "images/hover_black_left.bmp";
+blackHoverTL.src = "images/hover_black_top_left.bmp";
+blackHoverT.src = "images/hover_black_top.bmp";
+blackHoverTR.src = "images/hover_black_top_right.bmp";
+blackHoverR.src = "images/hover_black_right.bmp";
+blackHoverBR.src = "images/hover_black_bottom_right.bmp";
+blackHoverB.src = "images/hover_black_bottom.bmp";
+blackHoverBL.src = "images/hover_black_bottom_left.bmp";
+
+whiteLast.src = "images/Last_white.bmp";
+whiteLastL.src = "images/Last_white_left.bmp";
+whiteLastTL.src = "images/Last_white_top_left.bmp";
+whiteLastT.src = "images/Last_white_top.bmp";
+whiteLastTR.src = "images/Last_white_top_right.bmp";
+whiteLastR.src = "images/Last_white_right.bmp";
+whiteLastBR.src = "images/Last_white_bottom_right.bmp";
+whiteLastB.src = "images/Last_white_bottom.bmp";
+whiteLastBL.src = "images/Last_white_bottom_left.bmp";
+
+blackLast.src = "images/Last_black.bmp";
+blackLastL.src = "images/Last_black_left.bmp";
+blackLastTL.src = "images/Last_black_top_left.bmp";
+blackLastT.src = "images/Last_black_top.bmp";
+blackLastTR.src = "images/Last_black_top_right.bmp";
+blackLastR.src = "images/Last_black_right.bmp";
+blackLastBR.src = "images/Last_black_bottom_right.bmp";
+blackLastB.src = "images/Last_black_bottom.bmp";
+blackLastBL.src = "images/Last_black_bottom_left.bmp";
+
+whiteSpot.src = "images/white.bmp";
+whiteSpotL.src = "images/white_left.bmp";
+whiteSpotTL.src = "images/white_top_left.bmp";
+whiteSpotT.src = "images/white_top.bmp";
+whiteSpotTR.src = "images/white_top_right.bmp";
+whiteSpotR.src = "images/white_right.bmp";
+whiteSpotBR.src = "images/white_bottom_right.bmp";
+whiteSpotB.src = "images/white_bottom.bmp";
+whiteSpotBL.src = "images/white_bottom_left.bmp";
+
+blackSpot.src = "images/black.bmp";
+blackSpotL.src = "images/black_left.bmp";
+blackSpotTL.src = "images/black_top_left.bmp";
+blackSpotT.src = "images/black_top.bmp";
+blackSpotTR.src = "images/black_top_right.bmp";
+blackSpotR.src = "images/black_right.bmp";
+blackSpotBR.src = "images/black_bottom_right.bmp";
+blackSpotB.src = "images/black_bottom.bmp";
+blackSpotBL.src = "images/black_bottom_left.bmp";
+
+// PARAM[1] = X co-ordinate
+// PARAM[2] = Y co-ordinate
+// PARAM[3] = white, black, or NULL
+// PARAM[4] = hover, last, or NULL
+function setIntersection(x,y,colour,type) {
+// set a given intersection to a specified colour and type
+// TODO: make shorter
+    if (x == 1 && y == 1)
+	{ // top left
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverTL.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastTL.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotTL.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverTL.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastTL.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotTL.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotTL.src;
+    	}
+    }
+    else if(x == 19 && y == 1)
+    { // top right
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverTR.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastTR.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotTR.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverTR.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastTR.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotTR.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotTR.src;
+    	}
+    }
+    else if(x == 1 && y == 19)
+    { // bottom left
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverBL.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastBL.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotBL.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverBL.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastBL.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotBL.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotBL.src;
+    	}
+    }
+    else if(x == 19 && y == 19)
+    { // bottom right
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverBR.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastBR.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotBR.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverBR.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastBR.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotBR.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotBR.src;
+    	}
+    }
+    else if(x == 1)
+    { // left
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverL.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastL.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotL.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverL.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastL.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotL.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotL.src;
+    	}
+    }
+    else if(y == 1)
+    { // top
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverT.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastT.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotT.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverT.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastT.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotT.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotT.src;
+    	}
+    }
+    else if(y == 19)
+    { // bottom
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverB.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastB.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotB.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverB.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastB.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotB.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotB.src;
+    	}
+    }
+    else if(x == 19)
+    { // right
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHoverR.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLastR.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpotR.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHoverR.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLastR.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpotR.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpotR.src;
+    	}
+    }
+    else
+    { // anywhere else
+    	if (colour == "white" && type == "hover")
+    	{
+        	document.images[x+(size*(y-1))-1].src = whiteHover.src;	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = whiteLast.src;	
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		document.images[x+(size*(y-1))-1].src = whiteSpot.src;	
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackHover.src;	
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		document.images[x+(size*(y-1))-1].src = blackLast.src;	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		document.images[x+(size*(y-1))-1].src = blackSpot.src;	
+    	}
+    	else
+    	{
+    		document.images[x+(size*(y-1))-1].src = emptySpot.src;
+    	}
+    }
+}
+
+// PARAM[1] = X co-ordinate
+// PARAM[2] = Y co-ordinate
+// PARAM[3] = white, black or NULL
+// PARAM[4] = hover, last or NULL
+// returns: 1 if true, else 0
+function getIntersection(x,y,colour,type) {
+// check if a given interection is the colour and type specified
+// TODO: make shorter
+    if (x < 1 || y < 1 || x > size || y > size)
+    { // not a valid square so just return 0 - this can happen for pente check etc - as we check crudely
+		return 0;
+    }
+    if (x == 1 && y == 1)
+	{ // top left
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotTL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(x == 19 && y == 1)
+    { // top right
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotTR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(x == 1 && y == 19)
+    { // bottom left
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotBL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(x == 19 && y == 19)
+    { // bottom right
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotBR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(x == 1)
+    { // left
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotL.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(y == 1)
+    { // top
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotT.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(y == 19)
+    { // bottom
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotB.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else if(x == 19)
+    { // right
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHoverR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLastR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpotR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHoverR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLastR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpotR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpotR.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    else
+    { // anywhere else
+    	if (colour == "white" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteHover.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "white" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == whiteLast.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "white")
+    	{ // white normal
+    		if (document.images[x+(size*(y-1))-1].src == whiteSpot.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "hover")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackHover.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else if (colour == "black" && type == "last")
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == blackLast.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    	else if (colour == "black")
+    	{ // black notmal
+    		if (document.images[x+(size*(y-1))-1].src == blackSpot.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }		
+    	}
+    	else
+    	{
+    		if (document.images[x+(size*(y-1))-1].src == emptySpot.src)
+    	    { // the specified image is in the specified intersection
+    	        return 1;
+    	    }	
+    	}
+    }
+    // the image is NOT at the specified intersection
+    return 0;
+}
+
+
+// PARAM[1] = X co-ordinate
+// PARAM[2] = Y co-ordinate
+// returns: 1 if the square has a physical white piece (normal or last), else 0
+function iswhite(x,y) {
+// check if white piece on sqaure
+    if (getIntersection(x,y,"white","last")==1 || getIntersection(x,y,"white")==1)
+    { // it is white
+        return 1;
+    }
+    else
+    { // no white piece
+        return 0;
+    }
+}
+
+// PARAM[1] = X co-ordinate
+// PARAM[2] = Y co-ordinate
+// returns: 1 if the square has a physical black piece (normal or last), else 0
+function isblack(x,y) {
+// check if black piece on sqaure
+    if (getIntersection(x,y,"black","last")==1 || getIntersection(x,y,"black")==1)
+    { // it is black
+        return 1;
+    }
+    else
+    { // no black piece
+        return 0;
+
+    }
+}
+
+// PARAM[1] = X co-ordinate
+// PARAM[2] = Y co-ordinate
+// returns: 1 if the square is empty, else 0
+function isEmpty(x,y) {
+// check if empty sqaure
+    if (getIntersection(x,y)==1)
+    { // it is empty
+        return 1;
+    }
+    else
+    { // no white piece
+        return 0;
+    }
+}
+
+function newGame() {
+	player = 1;
+	turn = 1;
+	oldX = 0;
+	oldY = 0;
+	p1Takes = 0;
+	p2Takes = 0;
+	document.getElementById('p1tessera').innerHTML='';
+	document.getElementById('p2tessera').innerHTML='';
+	document.getElementById('p1tria').innerHTML='';
+	document.getElementById('p2tria').innerHTML='';
+	document.getElementById('p1taken').innerHTML='Number of takes: ' + p1Takes;
+	document.getElementById('p2taken').innerHTML='Number of takes:' + p2Takes;
+	for (var y = 1; y <= size; y++) 
+	{
+		for (var x = 1; x <= size; x++) {
+                        setIntersection(x,y);
+	  	 }
+	}
+}
+
+function take(x,y) {
+// removes any pieces classed as taken now that move has been made on screen at X,Y
+// check all rows of 3 from target
+// straight up - north
+if(y>3)
+{ // cannot take this way if y is 3 or less
+ if(player==2 && iswhite(x,y-1)==1 && iswhite(x,y-2)==1 && isblack(x,y-3)==1)
+	{
+   	setIntersection(x,y-1);
+	setIntersection(x,y-2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x,y-1)==1 && isblack(x,y-2)==1 && iswhite(x,y-3)==1)
+	{
+   	setIntersection(x,y-1);
+      setIntersection(x,y-2);
+      p1Takes++;
+	}
+}
+
+// upper-right diagonal - north-east
+if(y>3 && x<size-2)
+{ // cannot take this way if y is 3 or less and x > size - 3
+if(player==2 && iswhite(x+1,y-1)==1 && iswhite(x+2,y-2)==1 && isblack(x+3,y-3)==1)
+	{
+   	setIntersection(x+1,y-1);
+	setIntersection(x+2,y-2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x+1,y-1)==1 && isblack(x+2,y-2)==1 && iswhite(x+3,y-3)==1)
+	{
+   	setIntersection(x+1,y-1);
+      setIntersection(x+2,y-2);
+      p1Takes++;
+	}
+}
+
+// to the right - east
+if(x<size-2)
+{ // cannot take this way if x > size - 3
+if(player==2 && iswhite(x+1,y)==1 && iswhite(x+2,y)==1 && isblack(x+3,y)==1)
+	{
+   	setIntersection(x+1,y);
+	setIntersection(x+2,y);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x+1,y)==1 && isblack(x+2,y)==1 && iswhite(x+3,y)==1)
+	{
+   	setIntersection(x+1,y);
+      setIntersection(x+2,y);
+      p1Takes++;
+	}
+}
+
+// lower-right diagonal - south-east
+if(y<size-2 && x<size-2)
+{ // cannot take this way if y > size - 3 and x > size - 3
+if(player==2 && iswhite(x+1,y+1)==1 && iswhite(x+2,y+2)==1 && isblack(x+3,y+3)==1)
+	{
+   	setIntersection(x+1,y+1);
+	setIntersection(x+2,y+2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x+1,y+1)==1 && isblack(x+2,y+2)==1 && iswhite(x+3,y+3)==1)
+	{
+   	setIntersection(x+1,y+1);
+      setIntersection(x+2,y+2);
+      p1Takes++;
+	}
+}
+
+// straight down - south
+if(y<size-2 )
+{ // cannot take this way if y > size - 3
+if(player==2 && iswhite(x,y+1)==1 && iswhite(x,y+2)==1 && isblack(x,y+3)==1)
+	{
+   	setIntersection(x,y+1);
+	setIntersection(x,y+2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x,y+1)==1 && isblack(x,y+2)==1 && iswhite(x,y+3)==1)
+	{
+   	setIntersection(x,y+1);
+      setIntersection(x,y+2);
+      p1Takes++;
+	}
+}
+
+// lower-left diagonal - south-west
+if(y<size-2 && x>3)
+{ // cannot take this way if y > size - 3 and x is 3 or less
+if(player==2 && iswhite(x-1,y+1)==1 && iswhite(x-2,y+2)==1 && isblack(x-3,y+3)==1)
+	{
+   	setIntersection(x-1,y+1);
+	setIntersection(x-2,y+2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x-1,y+1)==1 && isblack(x-2,y+2)==1 && iswhite(x-3,y+3)==1)
+	{
+   	setIntersection(x-1,y+1);
+      setIntersection(x-2,y+2);
+      p1Takes++;
+	}
+}
+
+// to the left - west
+if(x>3)
+{ // cannot take this way if x is 3 or less
+if(player==2 && iswhite(x-1,y)==1 && iswhite(x-2,y)==1 && isblack(x-3,y)==1)
+	{
+   	setIntersection(x-1,y);
+	setIntersection(x-2,y);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x-1,y)==1 && isblack(x-2,y)==1 && iswhite(x-3,y)==1)
+	{
+   	setIntersection(x-1,y);
+      setIntersection(x-2,y);
+      p1Takes++;
+	}
+}
+
+// upper-left diagonal - north-west
+if(y>3&& x>3)
+{ // cannot take this way if y is 3 or less and x is 3 or less
+if(player==2 && iswhite(x-1,y-1)==1 && iswhite(x-2,y-2)==1 && isblack(x-3,y-3)==1)
+	{
+   	setIntersection(x-1,y-1);
+	setIntersection(x-2,y-2);
+	p2Takes++;
+	}
+else if(player==1 && isblack(x-1,y-1)==1 && isblack(x-2,y-2)==1 && iswhite(x-3,y-3)==1)
+	{
+   	setIntersection(x-1,y-1);
+      setIntersection(x-2,y-2);
+      p1Takes++;
+	}
+}
+}
+
+function hasTria(player) {
+// check for tria after move for every square on board for local player passed in
+// we check for all squares as although crude, it does the job, is quick enough, and also allows negative checking
+// return 1 if there is one, else 0
+	// loop through all squares 
+	for (var a = 1; a <= size; a++)
+	{ // a represents x co-ordinate for searching
+		for (var b = 1; b <= size; b++)
+		{ // b represents y co-ordinate for searching
+			if (a < 1 || b < 1 || a > size || b > size)
+			{ 
+				// square is outside board so line cannot be formed in this direction
+			}
+			else
+			{ // check for tria
+						if(player==2)
+						{					
+							if((isblack(a,b)==1 && isblack(a,b-1)==1 && isblack(a,b-2)==1 && isEmpty(a,b-3)==1 && isEmpty(a,b+1)==1)||
+							(isblack(a,b)==1 && isblack(a-1,b)==1 && isblack(a-2,b)==1 && isEmpty(a-3,b)==1 && isEmpty(a+1,b)==1)||
+							(isblack(a,b)==1 && isblack(a-1,b+1)==1 && isblack(a-2,b+2)==1 && isEmpty(a-3,b+3)==1 && isEmpty(a+1,b-1)==1)||
+							(isblack(a,b)==1 && isblack(a-1,b-1)==1 && isblack(a-2,b-2)==1 && isEmpty(a-3,b-3)==1 && isEmpty(a+1,b+1)==1))
+							{
+								return 1;
+							}
+						}	
+						else
+						{ // player==1					
+							if((iswhite(a,b)==1 && iswhite(a,b-1)==1 && iswhite(a,b-2)==1 && isEmpty(a,b-3)==1 && isEmpty(a,b+1)==1)||	
+							(iswhite(a,b)==1 && iswhite(a-1,b)==1 && iswhite(a-2,b)==1 && isEmpty(a-3,b)==1 && isEmpty(a+1,b)==1)||
+	 						(iswhite(a,b)==1 && iswhite(a-1,b+1)==1 && iswhite(a-2,b+2)==1 && isEmpty(a-3,b+3)==1 && isEmpty(a+1,b-1)==1)||
+							(iswhite(a,b)==1 && iswhite(a-1,b-1)==1 && iswhite(a-2,b-2)==1 && isEmpty(a-3,b-3)==1 && isEmpty(a+1,b+1)==1))
+							{
+								return 1;
+							}
+						}
+			}
+		}
+	} 
+	return 0;
+}
+
+function hasTessera(player) {
+// check for tessera after move for every square on board for local player passed in
+// we check for all squares as although crude, it does the job, is quick enough, and also allows negative checking
+// return 1 if there is one, else 0
+	// loop through all squares 
+	for (var a = 1; a <= size; a++)
+	{ // a represents x co-ordinate for searching
+		for (var b = 1; b <= size; b++)
+		{ // b represents y co-ordinate for searching
+			if (a < 1 || b < 1 || a > size || b > size)
+			{ 
+				// square is outside board so line cannot be formed in this direction
+			}
+			else
+			{ // check for tessera
+				if(player==2)
+				{	
+					if((isblack(a,b)==1 && isblack(a,b-1)==1 && isblack(a,b-2)==1 && isblack(a,b-3)==1 && isEmpty(a,b+1)==1)||
+					(isblack(a,b)==1 && isblack(a+1,b)==1 && isblack(a+2,b)==1 && isblack(a+3,b)==1 && isEmpty(a-1,b)==1)|| 					
+					(isblack(a,b)==1 && isblack(a-1,b)==1 && isblack(a-2,b)==1 && isblack(a-3,b)==1 && isEmpty(a+1,b)==1)||
+					(isblack(a,b)==1 && isblack(a,b+1)==1 && isblack(a,b+2)==1 && isblack(a,b+3)==1 && isEmpty(a,b-1)==1)||
+					(isblack(a,b)==1 && isblack(a+1,b+1)==1 && isblack(a+2,b+2)==1 && isblack(a+3,b+3)==1 && isEmpty(a-1,b-1)==1)||
+					(isblack(a,b)==1 && isblack(a+1,b-1)==1 && isblack(a+2,b-2)==1 && isblack(a+3,b-3)==1 && isEmpty(a-1,b+1)==1)||
+					(isblack(a,b)==1 && isblack(a-1,b+1)==1 && isblack(a-2,b+2)==1 && isblack(a-3,b+3)==1 && isEmpty(a+1,b-1)==1)||
+					(isblack(a,b)==1 && isblack(a-1,b-1)==1 && isblack(a-2,b-2)==1 && isblack(a-3,b-3)==1 && isEmpty(a+1,b+1)==1))
+					{
+						return 1;
+					}
+				}
+				else
+				{ // player==1
+					if((iswhite(a,b)==1 && iswhite(a,b-1)==1 && iswhite(a,b-2)==1 && iswhite(a,b-3)==1 && isEmpty(a,b+1)==1)||	
+					(iswhite(a,b)==1 && iswhite(a+1,b)==1 && iswhite(a+2,b)==1 && iswhite(a+3,b)==1 && isEmpty(a-1,b)==1)||
+					(iswhite(a,b)==1 && iswhite(a-1,b)==1 && iswhite(a-2,b)==1 && iswhite(a-3,b)==1 && isEmpty(a+1,b)==1)||
+						(iswhite(a,b)==1 && iswhite(a,b+1)==1 && iswhite(a,b+2)==1 && iswhite(a,b+3)==1 && isEmpty(a,b-1)==1)||
+					(iswhite(a,b)==1 && iswhite(a+1,b+1)==1 && iswhite(a+2,b+2)==1 && iswhite(a+3,b+3)==1 && isEmpty(a-1,b-1)==1)||
+					(iswhite(a,b)==1 && iswhite(a+1,b-1)==1 && iswhite(a+2,b-2)==1 && iswhite(a+3,b-3)==1 && isEmpty(a-1,b+1)==1)||
+					(iswhite(a,b)==1 && iswhite(a-1,b+1)==1 && iswhite(a-2,b+2)==1 && iswhite(a-3,b+3)==1 && isEmpty(a+1,b-1)==1)||
+					(iswhite(a,b)==1 && iswhite(a-1,b-1)==1 && iswhite(a-2,b-2)==1 && iswhite(a-3,b-3)==1 && isEmpty(a+1,b+1)==1))
+					{
+						return 1;
+					}
+				}
+			}
+		}
+	} 
+	return 0;
+}
+
+function hasPente(player,x,y) {
+// check for pente after move for every square on board for local player passed in
+// return 1 if there is one, else 0
+
+	// loop through all squares in a 3 by 3 radius
+	for (var a = x-3; a <= x+3; a++)
+	{ // a represents x co-ordinate for searching
+		for (var b = y-3; b <= y+3; b++)
+		{ // b represents y co-ordinate for searching
+			if (a < 1 || b < 1 || a > size || b > size)
+			{ 
+				// square is outside board so line cannot be formed in this direction
+			}
+			else
+			{ // check for pente
+			      if((player==2 && isblack(a,b)==1 && isblack(a,b-1)==1 && isblack(a,b-2)==1 && isblack(a,b-3)==1 && isblack(a,b-4)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a+1,b)==1 && isblack(a+2,b)==1 && isblack(a+3,b)==1 && isblack(a+4,b)==1)|| 					
+				(player==2 && isblack(a,b)==1 && isblack(a-1,b)==1 && isblack(a-2,b)==1 && isblack(a-3,b)==1 && isblack(a-4,b)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a,b+1)==1 && isblack(a,b+2)==1 && isblack(a,b+3)==1 && isblack(a,b+4)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a+1,b+1)==1 && isblack(a+2,b+2)==1 && isblack(a+3,b+3)==1 && isblack(a+4,b+4)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a+1,b-1)==1 && isblack(a+2,b-2)==1 && isblack(a+3,b-3)==1 && isblack(a+4,b-4)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a-1,b+1)==1 && isblack(a-2,b+2)==1 && isblack(a-3,b+3)==1 && isblack(a-4,b+4)==1)||
+				(player==2 && isblack(a,b)==1 && isblack(a-1,b-1)==1 && isblack(a-2,b-2)==1 && isblack(a-3,b-3)==1 && isblack(a-4,b-4)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a,b-1)==1 && iswhite(a,b-2)==1 && iswhite(a,b-3)==1 && iswhite(a,b-4)==1)||	
+				(player==1 && iswhite(a,b)==1 && iswhite(a+1,b)==1 && iswhite(a+2,b)==1 && iswhite(a+3,b)==1 && iswhite(a+4,b)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a-1,b)==1 && iswhite(a-2,b)==1 && iswhite(a-3,b)==1 && iswhite(a-4,b)==1)||
+					(player==1 && iswhite(a,b)==1 && iswhite(a,b+1)==1 && iswhite(a,b+2)==1 && iswhite(a,b+3)==1 && iswhite(a,b+4)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a+1,b+1)==1 && iswhite(a+2,b+2)==1 && iswhite(a+3,b+3)==1 && iswhite(a+4,b+4)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a+1,b-1)==1 && iswhite(a+2,b-2)==1 && iswhite(a+3,b-3)==1 && iswhite(a+4,b-4)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a-1,b+1)==1 && iswhite(a-2,b+2)==1 && iswhite(a-3,b+3)==1 && iswhite(a-4,b+4)==1)||
+				(player==1 && iswhite(a,b)==1 && iswhite(a-1,b-1)==1 && iswhite(a-2,b-2)==1 && iswhite(a-3,b-3)==1 && iswhite(a-4,b-4)==1))
+				{
+					return 1;
+				}
+			}
+		}
+	} 
+	return 0;
+}
+
+function hasTakes(player) {
+// check for 5 takes to see if player has won
+// return 1 if there if there are 5 takes, else 0
+	if ((player==1 && p1Takes == 5) || (player==2 && p2Takes == 5))
+	{
+		return 1;	
+	}
+	return 0;
+}
+
+
+function hover(x,y) {
+// place an "hover" on square at co-ordinate X,Y, if it has a "intersection"
+	if (player==1)
+	{ // player 1 - white
+		if(getIntersection(x,y)==1)
+		{
+                        setIntersection(x,y,"white","hover");
+		}
+	}
+	else
+	{ // player 2 - black
+		if(getIntersection(x,y)==1)
+		{
+                        setIntersection(x,y,"black","hover");
+		}
+	}
+}
+
+function unhover(x,y) {
+// place an "empty spot" on square at co-ordinate X,Y if it has a "hover" on it
+// do same for both players
+	if(getIntersection(x,y,"white","hover")==1||getIntersection(x,y,"black","hover")==1)
+	{
+                setIntersection(x,y);
+	}
+	
+}
+
+function place(x,y) {
+// place a "last move" counter on square at co-ordinate X,Y (after checking) - this is the move itself
+	if (getIntersection(x,y,"white")==1||getIntersection(x,y,"black")==1||
+	getIntersection(x,y,"white","last")==1||getIntersection(x,y,"black","last")==1)
+	{
+		alert("You cannot move here - there is already a piece on this intersection")
+		return
+	}
+	// at this point we are sure that move can be made on screen
+	// add new piece
+	if (player==1)
+	{ // player 1 - white
+                setIntersection(x,y,"white","last");
+		if(turn>1)
+		{
+                        setIntersection(oldX,oldY,"black");
+		}
+	}
+	else
+	{ // player 2 - black
+                setIntersection(x,y,"black","last");
+		if(turn>1)	
+		{
+                        setIntersection(oldX,oldY,"white");
+		}
+	}
+	oldX = x;
+	oldY = y;
+
+	// now clear any taken pieces
+	take(x,y);
+	
+	// update takes
+	document.getElementById('p1taken').innerHTML='Number of takes: ' + p1Takes;
+	document.getElementById('p2taken').innerHTML='Number of takes:' + p2Takes;
+	
+	// check if game is won
+	if(hasPente(player,x,y)==1 || hasTakes(player)==1)
+	{
+		alert("Player " + player + " has won!");
+		newGame();
+		return;
+	}
+
+	
+	// check for tria
+	if(hasTria(1)==1)
+	{
+		document.getElementById('p1tria').innerHTML='White has a Tria'
+	}
+	else
+	{
+		document.getElementById('p1tria').innerHTML=''
+	}
+	if(hasTria(2)==1)
+	{
+		document.getElementById('p2tria').innerHTML='Black has a Tria'
+	}
+	else
+	{
+		document.getElementById('p2tria').innerHTML=''
+	}
+
+	// check for tria
+	if(hasTessera(1)==1)
+	{
+		document.getElementById('p1tessera').innerHTML='White has a Tessera'
+	}
+	else
+	{
+		document.getElementById('p1tessera').innerHTML=''
+	}
+	if(hasTessera(2)==1)
+	{
+		document.getElementById('p2tessera').innerHTML='Black has a Tessera'
+	}
+	else
+	{
+		document.getElementById('p2tessera').innerHTML=''
+	}
+	
+	// move succesful so change player
+	if (player==1)
+	{
+		player=2;
+	}
+	else
+	{
+		player=1;
+	}
+	turn++;
+}
+
+</script>
+	<!-- ////////////////////// FUNCTIONS END HERE //////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<div id="header">Pente</div>
+
+	<div id="board">
+
+		<center>
+			<BR>
+			<table cellspacing="0" cellpadding="0" border="0">
+				<tr>
+					<td><a href="javascript:void place(1,1)"
+						onMouseOver="hover(1,1); setMsg(''); return true"
+						onMouseOut="unhover(1,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,1)"
+						onMouseOver="hover(2,1); setMsg(''); return true"
+						onMouseOut="unhover(2,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,1)"
+						onMouseOver="hover(3,1); setMsg(''); return true"
+						onMouseOut="unhover(3,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,1)"
+						onMouseOver="hover(4,1); setMsg(''); return true"
+						onMouseOut="unhover(4,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,1)"
+						onMouseOver="hover(5,1); setMsg(''); return true"
+						onMouseOut="unhover(5,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,1)"
+						onMouseOver="hover(6,1); setMsg(''); return true"
+						onMouseOut="unhover(6,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,1)"
+						onMouseOver="hover(7,1); setMsg(''); return true"
+						onMouseOut="unhover(7,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,1)"
+						onMouseOver="hover(8,1); setMsg(''); return true"
+						onMouseOut="unhover(8,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,1)"
+						onMouseOver="hover(9,1); setMsg(''); return true"
+						onMouseOut="unhover(9,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,1)"
+						onMouseOver="hover(10,1); setMsg(''); return true"
+						onMouseOut="unhover(10,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,1)"
+						onMouseOver="hover(11,1); setMsg(''); return true"
+						onMouseOut="unhover(11,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,1)"
+						onMouseOver="hover(12,1); setMsg(''); return true"
+						onMouseOut="unhover(12,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,1)"
+						onMouseOver="hover(13,1); setMsg(''); return true"
+						onMouseOut="unhover(13,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,1)"
+						onMouseOver="hover(14,1); setMsg(''); return true"
+						onMouseOut="unhover(14,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,1)"
+						onMouseOver="hover(15,1); setMsg(''); return true"
+						onMouseOut="unhover(15,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,1)"
+						onMouseOver="hover(16,1); setMsg(''); return true"
+						onMouseOut="unhover(16,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,1)"
+						onMouseOver="hover(17,1); setMsg(''); return true"
+						onMouseOut="unhover(17,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,1)"
+						onMouseOver="hover(18,1); setMsg(''); return true"
+						onMouseOut="unhover(18,1)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,1)"
+						onMouseOver="hover(19,1); setMsg(''); return true"
+						onMouseOut="unhover(19,1)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,2)"
+						onMouseOver="hover(1,2); setMsg(''); return true"
+						onMouseOut="unhover(1,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,2)"
+						onMouseOver="hover(2,2); setMsg(''); return true"
+						onMouseOut="unhover(2,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,2)"
+						onMouseOver="hover(3,2); setMsg(''); return true"
+						onMouseOut="unhover(3,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,2)"
+						onMouseOver="hover(4,2); setMsg(''); return true"
+						onMouseOut="unhover(4,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,2)"
+						onMouseOver="hover(5,2); setMsg(''); return true"
+						onMouseOut="unhover(5,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,2)"
+						onMouseOver="hover(6,2); setMsg(''); return true"
+						onMouseOut="unhover(6,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,2)"
+						onMouseOver="hover(7,2); setMsg(''); return true"
+						onMouseOut="unhover(7,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,2)"
+						onMouseOver="hover(8,2); setMsg(''); return true"
+						onMouseOut="unhover(8,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,2)"
+						onMouseOver="hover(9,2); setMsg(''); return true"
+						onMouseOut="unhover(9,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,2)"
+						onMouseOver="hover(10,2); setMsg(''); return true"
+						onMouseOut="unhover(10,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,2)"
+						onMouseOver="hover(11,2); setMsg(''); return true"
+						onMouseOut="unhover(11,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,2)"
+						onMouseOver="hover(12,2); setMsg(''); return true"
+						onMouseOut="unhover(12,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,2)"
+						onMouseOver="hover(13,2); setMsg(''); return true"
+						onMouseOut="unhover(13,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,2)"
+						onMouseOver="hover(14,2); setMsg(''); return true"
+						onMouseOut="unhover(14,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,2)"
+						onMouseOver="hover(15,2); setMsg(''); return true"
+						onMouseOut="unhover(15,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,2)"
+						onMouseOver="hover(16,2); setMsg(''); return true"
+						onMouseOut="unhover(16,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,2)"
+						onMouseOver="hover(17,2); setMsg(''); return true"
+						onMouseOut="unhover(17,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,2)"
+						onMouseOver="hover(18,2); setMsg(''); return true"
+						onMouseOut="unhover(18,2)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,2)"
+						onMouseOver="hover(19,2); setMsg(''); return true"
+						onMouseOut="unhover(19,2)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,3)"
+						onMouseOver="hover(1,3); setMsg(''); return true"
+						onMouseOut="unhover(1,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,3)"
+						onMouseOver="hover(2,3); setMsg(''); return true"
+						onMouseOut="unhover(2,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,3)"
+						onMouseOver="hover(3,3); setMsg(''); return true"
+						onMouseOut="unhover(3,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,3)"
+						onMouseOver="hover(4,3); setMsg(''); return true"
+						onMouseOut="unhover(4,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,3)"
+						onMouseOver="hover(5,3); setMsg(''); return true"
+						onMouseOut="unhover(5,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,3)"
+						onMouseOver="hover(6,3); setMsg(''); return true"
+						onMouseOut="unhover(6,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,3)"
+						onMouseOver="hover(7,3); setMsg(''); return true"
+						onMouseOut="unhover(7,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,3)"
+						onMouseOver="hover(8,3); setMsg(''); return true"
+						onMouseOut="unhover(8,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,3)"
+						onMouseOver="hover(9,3); setMsg(''); return true"
+						onMouseOut="unhover(9,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,3)"
+						onMouseOver="hover(10,3); setMsg(''); return true"
+						onMouseOut="unhover(10,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,3)"
+						onMouseOver="hover(11,3); setMsg(''); return true"
+						onMouseOut="unhover(11,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,3)"
+						onMouseOver="hover(12,3); setMsg(''); return true"
+						onMouseOut="unhover(12,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,3)"
+						onMouseOver="hover(13,3); setMsg(''); return true"
+						onMouseOut="unhover(13,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,3)"
+						onMouseOver="hover(14,3); setMsg(''); return true"
+						onMouseOut="unhover(14,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,3)"
+						onMouseOver="hover(15,3); setMsg(''); return true"
+						onMouseOut="unhover(15,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,3)"
+						onMouseOver="hover(16,3); setMsg(''); return true"
+						onMouseOut="unhover(16,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,3)"
+						onMouseOver="hover(17,3); setMsg(''); return true"
+						onMouseOut="unhover(17,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,3)"
+						onMouseOver="hover(18,3); setMsg(''); return true"
+						onMouseOut="unhover(18,3)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,3)"
+						onMouseOver="hover(19,3); setMsg(''); return true"
+						onMouseOut="unhover(19,3)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,4)"
+						onMouseOver="hover(1,4); setMsg(''); return true"
+						onMouseOut="unhover(1,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,4)"
+						onMouseOver="hover(2,4); setMsg(''); return true"
+						onMouseOut="unhover(2,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,4)"
+						onMouseOver="hover(3,4); setMsg(''); return true"
+						onMouseOut="unhover(3,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,4)"
+						onMouseOver="hover(4,4); setMsg(''); return true"
+						onMouseOut="unhover(4,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,4)"
+						onMouseOver="hover(5,4); setMsg(''); return true"
+						onMouseOut="unhover(5,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,4)"
+						onMouseOver="hover(6,4); setMsg(''); return true"
+						onMouseOut="unhover(6,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,4)"
+						onMouseOver="hover(7,4); setMsg(''); return true"
+						onMouseOut="unhover(7,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,4)"
+						onMouseOver="hover(8,4); setMsg(''); return true"
+						onMouseOut="unhover(8,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,4)"
+						onMouseOver="hover(9,4); setMsg(''); return true"
+						onMouseOut="unhover(9,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,4)"
+						onMouseOver="hover(10,4); setMsg(''); return true"
+						onMouseOut="unhover(10,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,4)"
+						onMouseOver="hover(11,4); setMsg(''); return true"
+						onMouseOut="unhover(11,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,4)"
+						onMouseOver="hover(12,4); setMsg(''); return true"
+						onMouseOut="unhover(12,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,4)"
+						onMouseOver="hover(13,4); setMsg(''); return true"
+						onMouseOut="unhover(13,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,4)"
+						onMouseOver="hover(14,4); setMsg(''); return true"
+						onMouseOut="unhover(14,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,4)"
+						onMouseOver="hover(15,4); setMsg(''); return true"
+						onMouseOut="unhover(15,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,4)"
+						onMouseOver="hover(16,4); setMsg(''); return true"
+						onMouseOut="unhover(16,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,4)"
+						onMouseOver="hover(17,4); setMsg(''); return true"
+						onMouseOut="unhover(17,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,4)"
+						onMouseOver="hover(18,4); setMsg(''); return true"
+						onMouseOut="unhover(18,4)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,4)"
+						onMouseOver="hover(19,4); setMsg(''); return true"
+						onMouseOut="unhover(19,4)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,5)"
+						onMouseOver="hover(1,5); setMsg(''); return true"
+						onMouseOut="unhover(1,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,5)"
+						onMouseOver="hover(2,5); setMsg(''); return true"
+						onMouseOut="unhover(2,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,5)"
+						onMouseOver="hover(3,5); setMsg(''); return true"
+						onMouseOut="unhover(3,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,5)"
+						onMouseOver="hover(4,5); setMsg(''); return true"
+						onMouseOut="unhover(4,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,5)"
+						onMouseOver="hover(5,5); setMsg(''); return true"
+						onMouseOut="unhover(5,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,5)"
+						onMouseOver="hover(6,5); setMsg(''); return true"
+						onMouseOut="unhover(6,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,5)"
+						onMouseOver="hover(7,5); setMsg(''); return true"
+						onMouseOut="unhover(7,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,5)"
+						onMouseOver="hover(8,5); setMsg(''); return true"
+						onMouseOut="unhover(8,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,5)"
+						onMouseOver="hover(9,5); setMsg(''); return true"
+						onMouseOut="unhover(9,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,5)"
+						onMouseOver="hover(10,5); setMsg(''); return true"
+						onMouseOut="unhover(10,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,5)"
+						onMouseOver="hover(11,5); setMsg(''); return true"
+						onMouseOut="unhover(11,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,5)"
+						onMouseOver="hover(12,5); setMsg(''); return true"
+						onMouseOut="unhover(12,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,5)"
+						onMouseOver="hover(13,5); setMsg(''); return true"
+						onMouseOut="unhover(13,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,5)"
+						onMouseOver="hover(14,5); setMsg(''); return true"
+						onMouseOut="unhover(14,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,5)"
+						onMouseOver="hover(15,5); setMsg(''); return true"
+						onMouseOut="unhover(15,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,5)"
+						onMouseOver="hover(16,5); setMsg(''); return true"
+						onMouseOut="unhover(16,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,5)"
+						onMouseOver="hover(17,5); setMsg(''); return true"
+						onMouseOut="unhover(17,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,5)"
+						onMouseOver="hover(18,5); setMsg(''); return true"
+						onMouseOut="unhover(18,5)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,5)"
+						onMouseOver="hover(19,5); setMsg(''); return true"
+						onMouseOut="unhover(19,5)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,6)"
+						onMouseOver="hover(1,6); setMsg(''); return true"
+						onMouseOut="unhover(1,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,6)"
+						onMouseOver="hover(2,6); setMsg(''); return true"
+						onMouseOut="unhover(2,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,6)"
+						onMouseOver="hover(3,6); setMsg(''); return true"
+						onMouseOut="unhover(3,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,6)"
+						onMouseOver="hover(4,6); setMsg(''); return true"
+						onMouseOut="unhover(4,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,6)"
+						onMouseOver="hover(5,6); setMsg(''); return true"
+						onMouseOut="unhover(5,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,6)"
+						onMouseOver="hover(6,6); setMsg(''); return true"
+						onMouseOut="unhover(6,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,6)"
+						onMouseOver="hover(7,6); setMsg(''); return true"
+						onMouseOut="unhover(7,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,6)"
+						onMouseOver="hover(8,6); setMsg(''); return true"
+						onMouseOut="unhover(8,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,6)"
+						onMouseOver="hover(9,6); setMsg(''); return true"
+						onMouseOut="unhover(9,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,6)"
+						onMouseOver="hover(10,6); setMsg(''); return true"
+						onMouseOut="unhover(10,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,6)"
+						onMouseOver="hover(11,6); setMsg(''); return true"
+						onMouseOut="unhover(11,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,6)"
+						onMouseOver="hover(12,6); setMsg(''); return true"
+						onMouseOut="unhover(12,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,6)"
+						onMouseOver="hover(13,6); setMsg(''); return true"
+						onMouseOut="unhover(13,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,6)"
+						onMouseOver="hover(14,6); setMsg(''); return true"
+						onMouseOut="unhover(14,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,6)"
+						onMouseOver="hover(15,6); setMsg(''); return true"
+						onMouseOut="unhover(15,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,6)"
+						onMouseOver="hover(16,6); setMsg(''); return true"
+						onMouseOut="unhover(16,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,6)"
+						onMouseOver="hover(17,6); setMsg(''); return true"
+						onMouseOut="unhover(17,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,6)"
+						onMouseOver="hover(18,6); setMsg(''); return true"
+						onMouseOut="unhover(18,6)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,6)"
+						onMouseOver="hover(19,6); setMsg(''); return true"
+						onMouseOut="unhover(19,6)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,7)"
+						onMouseOver="hover(1,7); setMsg(''); return true"
+						onMouseOut="unhover(1,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,7)"
+						onMouseOver="hover(2,7); setMsg(''); return true"
+						onMouseOut="unhover(2,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,7)"
+						onMouseOver="hover(3,7); setMsg(''); return true"
+						onMouseOut="unhover(3,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,7)"
+						onMouseOver="hover(4,7); setMsg(''); return true"
+						onMouseOut="unhover(4,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,7)"
+						onMouseOver="hover(5,7); setMsg(''); return true"
+						onMouseOut="unhover(5,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,7)"
+						onMouseOver="hover(6,7); setMsg(''); return true"
+						onMouseOut="unhover(6,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,7)"
+						onMouseOver="hover(7,7); setMsg(''); return true"
+						onMouseOut="unhover(7,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,7)"
+						onMouseOver="hover(8,7); setMsg(''); return true"
+						onMouseOut="unhover(8,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,7)"
+						onMouseOver="hover(9,7); setMsg(''); return true"
+						onMouseOut="unhover(9,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,7)"
+						onMouseOver="hover(10,7); setMsg(''); return true"
+						onMouseOut="unhover(10,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,7)"
+						onMouseOver="hover(11,7); setMsg(''); return true"
+						onMouseOut="unhover(11,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,7)"
+						onMouseOver="hover(12,7); setMsg(''); return true"
+						onMouseOut="unhover(12,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,7)"
+						onMouseOver="hover(13,7); setMsg(''); return true"
+						onMouseOut="unhover(13,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,7)"
+						onMouseOver="hover(14,7); setMsg(''); return true"
+						onMouseOut="unhover(14,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,7)"
+						onMouseOver="hover(15,7); setMsg(''); return true"
+						onMouseOut="unhover(15,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,7)"
+						onMouseOver="hover(16,7); setMsg(''); return true"
+						onMouseOut="unhover(16,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,7)"
+						onMouseOver="hover(17,7); setMsg(''); return true"
+						onMouseOut="unhover(17,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,7)"
+						onMouseOver="hover(18,7); setMsg(''); return true"
+						onMouseOut="unhover(18,7)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,7)"
+						onMouseOver="hover(19,7); setMsg(''); return true"
+						onMouseOut="unhover(19,7)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,8)"
+						onMouseOver="hover(1,8); setMsg(''); return true"
+						onMouseOut="unhover(1,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,8)"
+						onMouseOver="hover(2,8); setMsg(''); return true"
+						onMouseOut="unhover(2,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,8)"
+						onMouseOver="hover(3,8); setMsg(''); return true"
+						onMouseOut="unhover(3,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,8)"
+						onMouseOver="hover(4,8); setMsg(''); return true"
+						onMouseOut="unhover(4,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,8)"
+						onMouseOver="hover(5,8); setMsg(''); return true"
+						onMouseOut="unhover(5,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,8)"
+						onMouseOver="hover(6,8); setMsg(''); return true"
+						onMouseOut="unhover(6,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,8)"
+						onMouseOver="hover(7,8); setMsg(''); return true"
+						onMouseOut="unhover(7,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,8)"
+						onMouseOver="hover(8,8); setMsg(''); return true"
+						onMouseOut="unhover(8,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,8)"
+						onMouseOver="hover(9,8); setMsg(''); return true"
+						onMouseOut="unhover(9,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,8)"
+						onMouseOver="hover(10,8); setMsg(''); return true"
+						onMouseOut="unhover(10,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,8)"
+						onMouseOver="hover(11,8); setMsg(''); return true"
+						onMouseOut="unhover(11,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,8)"
+						onMouseOver="hover(12,8); setMsg(''); return true"
+						onMouseOut="unhover(12,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,8)"
+						onMouseOver="hover(13,8); setMsg(''); return true"
+						onMouseOut="unhover(13,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,8)"
+						onMouseOver="hover(14,8); setMsg(''); return true"
+						onMouseOut="unhover(14,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,8)"
+						onMouseOver="hover(15,8); setMsg(''); return true"
+						onMouseOut="unhover(15,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,8)"
+						onMouseOver="hover(16,8); setMsg(''); return true"
+						onMouseOut="unhover(16,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,8)"
+						onMouseOver="hover(17,8); setMsg(''); return true"
+						onMouseOut="unhover(17,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,8)"
+						onMouseOver="hover(18,8); setMsg(''); return true"
+						onMouseOut="unhover(18,8)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,8)"
+						onMouseOver="hover(19,8); setMsg(''); return true"
+						onMouseOut="unhover(19,8)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,9)"
+						onMouseOver="hover(1,9); setMsg(''); return true"
+						onMouseOut="unhover(1,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,9)"
+						onMouseOver="hover(2,9); setMsg(''); return true"
+						onMouseOut="unhover(2,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,9)"
+						onMouseOver="hover(3,9); setMsg(''); return true"
+						onMouseOut="unhover(3,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,9)"
+						onMouseOver="hover(4,9); setMsg(''); return true"
+						onMouseOut="unhover(4,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,9)"
+						onMouseOver="hover(5,9); setMsg(''); return true"
+						onMouseOut="unhover(5,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,9)"
+						onMouseOver="hover(6,9); setMsg(''); return true"
+						onMouseOut="unhover(6,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,9)"
+						onMouseOver="hover(7,9); setMsg(''); return true"
+						onMouseOut="unhover(7,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,9)"
+						onMouseOver="hover(8,9); setMsg(''); return true"
+						onMouseOut="unhover(8,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,9)"
+						onMouseOver="hover(9,9); setMsg(''); return true"
+						onMouseOut="unhover(9,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,9)"
+						onMouseOver="hover(10,9); setMsg(''); return true"
+						onMouseOut="unhover(10,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,9)"
+						onMouseOver="hover(11,9); setMsg(''); return true"
+						onMouseOut="unhover(11,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,9)"
+						onMouseOver="hover(12,9); setMsg(''); return true"
+						onMouseOut="unhover(12,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,9)"
+						onMouseOver="hover(13,9); setMsg(''); return true"
+						onMouseOut="unhover(13,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,9)"
+						onMouseOver="hover(14,9); setMsg(''); return true"
+						onMouseOut="unhover(14,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,9)"
+						onMouseOver="hover(15,9); setMsg(''); return true"
+						onMouseOut="unhover(15,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,9)"
+						onMouseOver="hover(16,9); setMsg(''); return true"
+						onMouseOut="unhover(16,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,9)"
+						onMouseOver="hover(17,9); setMsg(''); return true"
+						onMouseOut="unhover(17,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,9)"
+						onMouseOver="hover(18,9); setMsg(''); return true"
+						onMouseOut="unhover(18,9)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,9)"
+						onMouseOver="hover(19,9); setMsg(''); return true"
+						onMouseOut="unhover(19,9)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,10)"
+						onMouseOver="hover(1,10); setMsg(''); return true"
+						onMouseOut="unhover(1,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,10)"
+						onMouseOver="hover(2,10); setMsg(''); return true"
+						onMouseOut="unhover(2,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,10)"
+						onMouseOver="hover(3,10); setMsg(''); return true"
+						onMouseOut="unhover(3,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,10)"
+						onMouseOver="hover(4,10); setMsg(''); return true"
+						onMouseOut="unhover(4,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,10)"
+						onMouseOver="hover(5,10); setMsg(''); return true"
+						onMouseOut="unhover(5,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,10)"
+						onMouseOver="hover(6,10); setMsg(''); return true"
+						onMouseOut="unhover(6,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,10)"
+						onMouseOver="hover(7,10); setMsg(''); return true"
+						onMouseOut="unhover(7,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,10)"
+						onMouseOver="hover(8,10); setMsg(''); return true"
+						onMouseOut="unhover(8,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,10)"
+						onMouseOver="hover(9,10); setMsg(''); return true"
+						onMouseOut="unhover(9,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,10)"
+						onMouseOver="hover(10,10); setMsg(''); return true"
+						onMouseOut="unhover(10,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,10)"
+						onMouseOver="hover(11,10); setMsg(''); return true"
+						onMouseOut="unhover(11,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,10)"
+						onMouseOver="hover(12,10); setMsg(''); return true"
+						onMouseOut="unhover(12,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,10)"
+						onMouseOver="hover(13,10); setMsg(''); return true"
+						onMouseOut="unhover(13,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,10)"
+						onMouseOver="hover(14,10); setMsg(''); return true"
+						onMouseOut="unhover(14,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,10)"
+						onMouseOver="hover(15,10); setMsg(''); return true"
+						onMouseOut="unhover(15,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,10)"
+						onMouseOver="hover(16,10); setMsg(''); return true"
+						onMouseOut="unhover(16,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,10)"
+						onMouseOver="hover(17,10); setMsg(''); return true"
+						onMouseOut="unhover(17,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,10)"
+						onMouseOver="hover(18,10); setMsg(''); return true"
+						onMouseOut="unhover(18,10)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,10)"
+						onMouseOver="hover(19,10); setMsg(''); return true"
+						onMouseOut="unhover(19,10)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,11)"
+						onMouseOver="hover(1,11); setMsg(''); return true"
+						onMouseOut="unhover(1,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,11)"
+						onMouseOver="hover(2,11); setMsg(''); return true"
+						onMouseOut="unhover(2,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,11)"
+						onMouseOver="hover(3,11); setMsg(''); return true"
+						onMouseOut="unhover(3,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,11)"
+						onMouseOver="hover(4,11); setMsg(''); return true"
+						onMouseOut="unhover(4,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,11)"
+						onMouseOver="hover(5,11); setMsg(''); return true"
+						onMouseOut="unhover(5,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,11)"
+						onMouseOver="hover(6,11); setMsg(''); return true"
+						onMouseOut="unhover(6,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,11)"
+						onMouseOver="hover(7,11); setMsg(''); return true"
+						onMouseOut="unhover(7,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,11)"
+						onMouseOver="hover(8,11); setMsg(''); return true"
+						onMouseOut="unhover(8,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,11)"
+						onMouseOver="hover(9,11); setMsg(''); return true"
+						onMouseOut="unhover(9,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,11)"
+						onMouseOver="hover(10,11); setMsg(''); return true"
+						onMouseOut="unhover(10,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,11)"
+						onMouseOver="hover(11,11); setMsg(''); return true"
+						onMouseOut="unhover(11,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,11)"
+						onMouseOver="hover(12,11); setMsg(''); return true"
+						onMouseOut="unhover(12,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,11)"
+						onMouseOver="hover(13,11); setMsg(''); return true"
+						onMouseOut="unhover(13,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,11)"
+						onMouseOver="hover(14,11); setMsg(''); return true"
+						onMouseOut="unhover(14,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,11)"
+						onMouseOver="hover(15,11); setMsg(''); return true"
+						onMouseOut="unhover(15,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,11)"
+						onMouseOver="hover(16,11); setMsg(''); return true"
+						onMouseOut="unhover(16,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,11)"
+						onMouseOver="hover(17,11); setMsg(''); return true"
+						onMouseOut="unhover(17,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,11)"
+						onMouseOver="hover(18,11); setMsg(''); return true"
+						onMouseOut="unhover(18,11)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,11)"
+						onMouseOver="hover(19,11); setMsg(''); return true"
+						onMouseOut="unhover(19,11)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,12)"
+						onMouseOver="hover(1,12); setMsg(''); return true"
+						onMouseOut="unhover(1,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,12)"
+						onMouseOver="hover(2,12); setMsg(''); return true"
+						onMouseOut="unhover(2,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,12)"
+						onMouseOver="hover(3,12); setMsg(''); return true"
+						onMouseOut="unhover(3,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,12)"
+						onMouseOver="hover(4,12); setMsg(''); return true"
+						onMouseOut="unhover(4,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,12)"
+						onMouseOver="hover(5,12); setMsg(''); return true"
+						onMouseOut="unhover(5,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,12)"
+						onMouseOver="hover(6,12); setMsg(''); return true"
+						onMouseOut="unhover(6,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,12)"
+						onMouseOver="hover(7,12); setMsg(''); return true"
+						onMouseOut="unhover(7,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,12)"
+						onMouseOver="hover(8,12); setMsg(''); return true"
+						onMouseOut="unhover(8,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,12)"
+						onMouseOver="hover(9,12); setMsg(''); return true"
+						onMouseOut="unhover(9,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,12)"
+						onMouseOver="hover(10,12); setMsg(''); return true"
+						onMouseOut="unhover(10,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,12)"
+						onMouseOver="hover(11,12); setMsg(''); return true"
+						onMouseOut="unhover(11,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,12)"
+						onMouseOver="hover(12,12); setMsg(''); return true"
+						onMouseOut="unhover(12,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,12)"
+						onMouseOver="hover(13,12); setMsg(''); return true"
+						onMouseOut="unhover(13,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,12)"
+						onMouseOver="hover(14,12); setMsg(''); return true"
+						onMouseOut="unhover(14,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,12)"
+						onMouseOver="hover(15,12); setMsg(''); return true"
+						onMouseOut="unhover(15,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,12)"
+						onMouseOver="hover(16,12); setMsg(''); return true"
+						onMouseOut="unhover(16,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,12)"
+						onMouseOver="hover(17,12); setMsg(''); return true"
+						onMouseOut="unhover(17,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,12)"
+						onMouseOver="hover(18,12); setMsg(''); return true"
+						onMouseOut="unhover(18,12)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,12)"
+						onMouseOver="hover(19,12); setMsg(''); return true"
+						onMouseOut="unhover(19,12)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,13)"
+						onMouseOver="hover(1,13); setMsg(''); return true"
+						onMouseOut="unhover(1,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,13)"
+						onMouseOver="hover(2,13); setMsg(''); return true"
+						onMouseOut="unhover(2,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,13)"
+						onMouseOver="hover(3,13); setMsg(''); return true"
+						onMouseOut="unhover(3,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,13)"
+						onMouseOver="hover(4,13); setMsg(''); return true"
+						onMouseOut="unhover(4,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,13)"
+						onMouseOver="hover(5,13); setMsg(''); return true"
+						onMouseOut="unhover(5,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,13)"
+						onMouseOver="hover(6,13); setMsg(''); return true"
+						onMouseOut="unhover(6,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,13)"
+						onMouseOver="hover(7,13); setMsg(''); return true"
+						onMouseOut="unhover(7,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,13)"
+						onMouseOver="hover(8,13); setMsg(''); return true"
+						onMouseOut="unhover(8,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,13)"
+						onMouseOver="hover(9,13); setMsg(''); return true"
+						onMouseOut="unhover(9,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,13)"
+						onMouseOver="hover(10,13); setMsg(''); return true"
+						onMouseOut="unhover(10,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,13)"
+						onMouseOver="hover(11,13); setMsg(''); return true"
+						onMouseOut="unhover(11,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,13)"
+						onMouseOver="hover(12,13); setMsg(''); return true"
+						onMouseOut="unhover(12,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,13)"
+						onMouseOver="hover(13,13); setMsg(''); return true"
+						onMouseOut="unhover(13,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,13)"
+						onMouseOver="hover(14,13); setMsg(''); return true"
+						onMouseOut="unhover(14,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,13)"
+						onMouseOver="hover(15,13); setMsg(''); return true"
+						onMouseOut="unhover(15,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,13)"
+						onMouseOver="hover(16,13); setMsg(''); return true"
+						onMouseOut="unhover(16,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,13)"
+						onMouseOver="hover(17,13); setMsg(''); return true"
+						onMouseOut="unhover(17,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,13)"
+						onMouseOver="hover(18,13); setMsg(''); return true"
+						onMouseOut="unhover(18,13)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,13)"
+						onMouseOver="hover(19,13); setMsg(''); return true"
+						onMouseOut="unhover(19,13)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,14)"
+						onMouseOver="hover(1,14); setMsg(''); return true"
+						onMouseOut="unhover(1,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,14)"
+						onMouseOver="hover(2,14); setMsg(''); return true"
+						onMouseOut="unhover(2,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,14)"
+						onMouseOver="hover(3,14); setMsg(''); return true"
+						onMouseOut="unhover(3,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,14)"
+						onMouseOver="hover(4,14); setMsg(''); return true"
+						onMouseOut="unhover(4,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,14)"
+						onMouseOver="hover(5,14); setMsg(''); return true"
+						onMouseOut="unhover(5,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,14)"
+						onMouseOver="hover(6,14); setMsg(''); return true"
+						onMouseOut="unhover(6,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,14)"
+						onMouseOver="hover(7,14); setMsg(''); return true"
+						onMouseOut="unhover(7,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,14)"
+						onMouseOver="hover(8,14); setMsg(''); return true"
+						onMouseOut="unhover(8,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,14)"
+						onMouseOver="hover(9,14); setMsg(''); return true"
+						onMouseOut="unhover(9,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,14)"
+						onMouseOver="hover(10,14); setMsg(''); return true"
+						onMouseOut="unhover(10,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,14)"
+						onMouseOver="hover(11,14); setMsg(''); return true"
+						onMouseOut="unhover(11,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,14)"
+						onMouseOver="hover(12,14); setMsg(''); return true"
+						onMouseOut="unhover(12,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,14)"
+						onMouseOver="hover(13,14); setMsg(''); return true"
+						onMouseOut="unhover(13,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,14)"
+						onMouseOver="hover(14,14); setMsg(''); return true"
+						onMouseOut="unhover(14,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,14)"
+						onMouseOver="hover(15,14); setMsg(''); return true"
+						onMouseOut="unhover(15,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,14)"
+						onMouseOver="hover(16,14); setMsg(''); return true"
+						onMouseOut="unhover(16,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,14)"
+						onMouseOver="hover(17,14); setMsg(''); return true"
+						onMouseOut="unhover(17,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,14)"
+						onMouseOver="hover(18,14); setMsg(''); return true"
+						onMouseOut="unhover(18,14)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,14)"
+						onMouseOver="hover(19,14); setMsg(''); return true"
+						onMouseOut="unhover(19,14)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,15)"
+						onMouseOver="hover(1,15); setMsg(''); return true"
+						onMouseOut="unhover(1,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,15)"
+						onMouseOver="hover(2,15); setMsg(''); return true"
+						onMouseOut="unhover(2,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,15)"
+						onMouseOver="hover(3,15); setMsg(''); return true"
+						onMouseOut="unhover(3,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,15)"
+						onMouseOver="hover(4,15); setMsg(''); return true"
+						onMouseOut="unhover(4,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,15)"
+						onMouseOver="hover(5,15); setMsg(''); return true"
+						onMouseOut="unhover(5,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,15)"
+						onMouseOver="hover(6,15); setMsg(''); return true"
+						onMouseOut="unhover(6,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,15)"
+						onMouseOver="hover(7,15); setMsg(''); return true"
+						onMouseOut="unhover(7,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,15)"
+						onMouseOver="hover(8,15); setMsg(''); return true"
+						onMouseOut="unhover(8,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,15)"
+						onMouseOver="hover(9,15); setMsg(''); return true"
+						onMouseOut="unhover(9,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,15)"
+						onMouseOver="hover(10,15); setMsg(''); return true"
+						onMouseOut="unhover(10,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,15)"
+						onMouseOver="hover(11,15); setMsg(''); return true"
+						onMouseOut="unhover(11,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,15)"
+						onMouseOver="hover(12,15); setMsg(''); return true"
+						onMouseOut="unhover(12,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,15)"
+						onMouseOver="hover(13,15); setMsg(''); return true"
+						onMouseOut="unhover(13,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,15)"
+						onMouseOver="hover(14,15); setMsg(''); return true"
+						onMouseOut="unhover(14,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,15)"
+						onMouseOver="hover(15,15); setMsg(''); return true"
+						onMouseOut="unhover(15,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,15)"
+						onMouseOver="hover(16,15); setMsg(''); return true"
+						onMouseOut="unhover(16,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,15)"
+						onMouseOver="hover(17,15); setMsg(''); return true"
+						onMouseOut="unhover(17,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,15)"
+						onMouseOver="hover(18,15); setMsg(''); return true"
+						onMouseOut="unhover(18,15)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,15)"
+						onMouseOver="hover(19,15); setMsg(''); return true"
+						onMouseOut="unhover(19,15)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,16)"
+						onMouseOver="hover(1,16); setMsg(''); return true"
+						onMouseOut="unhover(1,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,16)"
+						onMouseOver="hover(2,16); setMsg(''); return true"
+						onMouseOut="unhover(2,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,16)"
+						onMouseOver="hover(3,16); setMsg(''); return true"
+						onMouseOut="unhover(3,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,16)"
+						onMouseOver="hover(4,16); setMsg(''); return true"
+						onMouseOut="unhover(4,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,16)"
+						onMouseOver="hover(5,16); setMsg(''); return true"
+						onMouseOut="unhover(5,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,16)"
+						onMouseOver="hover(6,16); setMsg(''); return true"
+						onMouseOut="unhover(6,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,16)"
+						onMouseOver="hover(7,16); setMsg(''); return true"
+						onMouseOut="unhover(7,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,16)"
+						onMouseOver="hover(8,16); setMsg(''); return true"
+						onMouseOut="unhover(8,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,16)"
+						onMouseOver="hover(9,16); setMsg(''); return true"
+						onMouseOut="unhover(9,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,16)"
+						onMouseOver="hover(10,16); setMsg(''); return true"
+						onMouseOut="unhover(10,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,16)"
+						onMouseOver="hover(11,16); setMsg(''); return true"
+						onMouseOut="unhover(11,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,16)"
+						onMouseOver="hover(12,16); setMsg(''); return true"
+						onMouseOut="unhover(12,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,16)"
+						onMouseOver="hover(13,16); setMsg(''); return true"
+						onMouseOut="unhover(13,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,16)"
+						onMouseOver="hover(14,16); setMsg(''); return true"
+						onMouseOut="unhover(14,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,16)"
+						onMouseOver="hover(15,16); setMsg(''); return true"
+						onMouseOut="unhover(15,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,16)"
+						onMouseOver="hover(16,16); setMsg(''); return true"
+						onMouseOut="unhover(16,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,16)"
+						onMouseOver="hover(17,16); setMsg(''); return true"
+						onMouseOut="unhover(17,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,16)"
+						onMouseOver="hover(18,16); setMsg(''); return true"
+						onMouseOut="unhover(18,16)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,16)"
+						onMouseOver="hover(19,16); setMsg(''); return true"
+						onMouseOut="unhover(19,16)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,17)"
+						onMouseOver="hover(1,17); setMsg(''); return true"
+						onMouseOut="unhover(1,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,17)"
+						onMouseOver="hover(2,17); setMsg(''); return true"
+						onMouseOut="unhover(2,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,17)"
+						onMouseOver="hover(3,17); setMsg(''); return true"
+						onMouseOut="unhover(3,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,17)"
+						onMouseOver="hover(4,17); setMsg(''); return true"
+						onMouseOut="unhover(4,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,17)"
+						onMouseOver="hover(5,17); setMsg(''); return true"
+						onMouseOut="unhover(5,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,17)"
+						onMouseOver="hover(6,17); setMsg(''); return true"
+						onMouseOut="unhover(6,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,17)"
+						onMouseOver="hover(7,17); setMsg(''); return true"
+						onMouseOut="unhover(7,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,17)"
+						onMouseOver="hover(8,17); setMsg(''); return true"
+						onMouseOut="unhover(8,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,17)"
+						onMouseOver="hover(9,17); setMsg(''); return true"
+						onMouseOut="unhover(9,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,17)"
+						onMouseOver="hover(10,17); setMsg(''); return true"
+						onMouseOut="unhover(10,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,17)"
+						onMouseOver="hover(11,17); setMsg(''); return true"
+						onMouseOut="unhover(11,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,17)"
+						onMouseOver="hover(12,17); setMsg(''); return true"
+						onMouseOut="unhover(12,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,17)"
+						onMouseOver="hover(13,17); setMsg(''); return true"
+						onMouseOut="unhover(13,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,17)"
+						onMouseOver="hover(14,17); setMsg(''); return true"
+						onMouseOut="unhover(14,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,17)"
+						onMouseOver="hover(15,17); setMsg(''); return true"
+						onMouseOut="unhover(15,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,17)"
+						onMouseOver="hover(16,17); setMsg(''); return true"
+						onMouseOut="unhover(16,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,17)"
+						onMouseOver="hover(17,17); setMsg(''); return true"
+						onMouseOut="unhover(17,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,17)"
+						onMouseOver="hover(18,17); setMsg(''); return true"
+						onMouseOut="unhover(18,17)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,17)"
+						onMouseOver="hover(19,17); setMsg(''); return true"
+						onMouseOut="unhover(19,17)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,18)"
+						onMouseOver="hover(1,18); setMsg(''); return true"
+						onMouseOut="unhover(1,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,18)"
+						onMouseOver="hover(2,18); setMsg(''); return true"
+						onMouseOut="unhover(2,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,18)"
+						onMouseOver="hover(3,18); setMsg(''); return true"
+						onMouseOut="unhover(3,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,18)"
+						onMouseOver="hover(4,18); setMsg(''); return true"
+						onMouseOut="unhover(4,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,18)"
+						onMouseOver="hover(5,18); setMsg(''); return true"
+						onMouseOut="unhover(5,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,18)"
+						onMouseOver="hover(6,18); setMsg(''); return true"
+						onMouseOut="unhover(6,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,18)"
+						onMouseOver="hover(7,18); setMsg(''); return true"
+						onMouseOut="unhover(7,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,18)"
+						onMouseOver="hover(8,18); setMsg(''); return true"
+						onMouseOut="unhover(8,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,18)"
+						onMouseOver="hover(9,18); setMsg(''); return true"
+						onMouseOut="unhover(9,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,18)"
+						onMouseOver="hover(10,18); setMsg(''); return true"
+						onMouseOut="unhover(10,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,18)"
+						onMouseOver="hover(11,18); setMsg(''); return true"
+						onMouseOut="unhover(11,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,18)"
+						onMouseOver="hover(12,18); setMsg(''); return true"
+						onMouseOut="unhover(12,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,18)"
+						onMouseOver="hover(13,18); setMsg(''); return true"
+						onMouseOut="unhover(13,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,18)"
+						onMouseOver="hover(14,18); setMsg(''); return true"
+						onMouseOut="unhover(14,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,18)"
+						onMouseOver="hover(15,18); setMsg(''); return true"
+						onMouseOut="unhover(15,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,18)"
+						onMouseOver="hover(16,18); setMsg(''); return true"
+						onMouseOut="unhover(16,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,18)"
+						onMouseOver="hover(17,18); setMsg(''); return true"
+						onMouseOut="unhover(17,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,18)"
+						onMouseOver="hover(18,18); setMsg(''); return true"
+						onMouseOut="unhover(18,18)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,18)"
+						onMouseOver="hover(19,18); setMsg(''); return true"
+						onMouseOut="unhover(19,18)"><img border="0" width="30"></a></td>
+				</tr>
+				<tr>
+					<td><a href="javascript:void place(1,19)"
+						onMouseOver="hover(1,19); setMsg(''); return true"
+						onMouseOut="unhover(1,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(2,19)"
+						onMouseOver="hover(2,19); setMsg(''); return true"
+						onMouseOut="unhover(2,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(3,19)"
+						onMouseOver="hover(3,19); setMsg(''); return true"
+						onMouseOut="unhover(3,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(4,19)"
+						onMouseOver="hover(4,19); setMsg(''); return true"
+						onMouseOut="unhover(4,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(5,19)"
+						onMouseOver="hover(5,19); setMsg(''); return true"
+						onMouseOut="unhover(5,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(6,19)"
+						onMouseOver="hover(6,19); setMsg(''); return true"
+						onMouseOut="unhover(6,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(7,19)"
+						onMouseOver="hover(7,19); setMsg(''); return true"
+						onMouseOut="unhover(7,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(8,19)"
+						onMouseOver="hover(8,19); setMsg(''); return true"
+						onMouseOut="unhover(8,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(9,19)"
+						onMouseOver="hover(9,19); setMsg(''); return true"
+						onMouseOut="unhover(9,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(10,19)"
+						onMouseOver="hover(10,19); setMsg(''); return true"
+						onMouseOut="unhover(10,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(11,19)"
+						onMouseOver="hover(11,19); setMsg(''); return true"
+						onMouseOut="unhover(11,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(12,19)"
+						onMouseOver="hover(12,19); setMsg(''); return true"
+						onMouseOut="unhover(12,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(13,19)"
+						onMouseOver="hover(13,19); setMsg(''); return true"
+						onMouseOut="unhover(13,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(14,19)"
+						onMouseOver="hover(14,19); setMsg(''); return true"
+						onMouseOut="unhover(14,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(15,19)"
+						onMouseOver="hover(15,19); setMsg(''); return true"
+						onMouseOut="unhover(15,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(16,19)"
+						onMouseOver="hover(16,19); setMsg(''); return true"
+						onMouseOut="unhover(16,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(17,19)"
+						onMouseOver="hover(17,19); setMsg(''); return true"
+						onMouseOut="unhover(17,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(18,19)"
+						onMouseOver="hover(18,19); setMsg(''); return true"
+						onMouseOut="unhover(18,19)"><img border="0" width="30"></a></td>
+					<td><a href="javascript:void place(19,19)"
+						onMouseOver="hover(19,19); setMsg(''); return true"
+						onMouseOut="unhover(19,19)"><img border="0" width="30"></a></td>
+				</tr>
+			</table>
+		</center>
+	</div>
+	<div id="right">
+
+		<div class="player">
+			<h2>Player 1 - White</h2>
+			<h3>Robb Stark</h3>
+			<img class="profile" src="images/player1.jpg" height="110"></img>
+			<h2 id='p1taken'></h2>
+			<h2 id='p1tria'></h2>
+			<h2 id='p1tessera'></h2>
+		</div>
+
+		<div class="player">
+			<h2>Player 2 - Black</h2>
+			<h3>Jaime Lannister</h3>
+			<img class="profile" src="images/player2.jpg" height="110"></img>
+			<h2 id='p2taken'></h2>
+			<h2 id='p2tria'></h2>
+			<h2 id='p2tessera'></h2>
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		newGame();
+        </script>
+
+</body>
+</html>
